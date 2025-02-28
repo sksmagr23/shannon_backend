@@ -1,0 +1,32 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build artifacts
+dist/
+build/
+*.log
+*.tmp
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Environment variables
+.env
+.env.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Monaco Editor related files
+monaco-editor/
+monaco-editor-core/
+monaco-editor-webpack-plugin/
+
+# Miscellaneous
+*.bak
+*.swp
