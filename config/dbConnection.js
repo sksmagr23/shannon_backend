@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 function DB_Connection(url) {
     mongoose.connect(url).then(() => {
-      console.log(`DB with url ${url} connected scussfully`)
+      console.log(`DB connected scussfully`)
     }
     ).catch((error ) => {
       console.log(`Error ${error.message}`);
