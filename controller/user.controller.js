@@ -1,29 +1,22 @@
-import User from '../model/user.model.js';
-import oauth2Client from '../utils/googleConfig.js';
-import dotenv from 'dotenv';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
+import { asyncHandler } from "../utils/asyncHandler.js";
+import passport from "passport";
+export const googleLogin = asyncHandler(async (req, res) => {
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res); // Redirects to Google login
+});
 
-dotenv.config();
-
-const GoogleLogin = async (req, res) => {
-    try {
-        const { code } = req.query;
-        console.log(code);
-        const Userdata = await oauth2Client.getToken(code);
-        oauth2Client.setCredentials(Userdata.tokens);
-        const UserRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${Userdata.tokens.access_token}`);
-        const { name, email, picture } = UserRes.data;
-        let user = await User.findOne({ email });
-        if (!user) {
-            user = await User.create({ name, email, image: picture });
+export const googleCallback = asyncHandler(async (req, res) => {
+    passport.authenticate('google', {successRedirect: 'http://localhost:3000/login',failureRedirect: 'http://localhost:3000/login' }, async (err, user, info) => {
+        if (err || !user) {
+            throw new ErrorResponse(401, "User not authenticated via Google");
         }
-        const { _id } = user;
-        const token = jwt.sign({ _id, email }, process.env.JWT_SECRET);
-        return res.status(200).json({ message: 'Success', user, token });
-    } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
-};
 
-export { GoogleLogin };
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        return res
+            .status(200)
+            .json((200, { user, accessToken, refreshToken }, "User logged in via Google successfully"));
+    })(req, res);
+});
