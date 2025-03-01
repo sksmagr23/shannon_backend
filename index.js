@@ -9,6 +9,8 @@ import locationRouter from './router/location.route.js';
 import passport from 'passport';
 import session from 'express-session';
 import './config/passportConfig.js';
+import dashboardRouter from './router/dashboard.route.js';
+
 dotenv.config();
 const app = express();
 
@@ -37,6 +39,7 @@ app.use(passport.session());
 app.use('/api/', userRouter);
 app.use('/api/weather', weatherRouter);
 app.use('/api/location', locationRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 const PORT = process.env.PORT || 5000;
 
