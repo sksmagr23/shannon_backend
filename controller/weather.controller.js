@@ -3,6 +3,7 @@ import axios from "axios";
 export const getCurrentWeather = async (req, res) => {
   try {
     const { city } = req.params;
+    console.log(city);
     const response = await axios.get(
       `${process.env.WEATHER_API_BASE_URL}/current.json`,
       {
@@ -13,7 +14,11 @@ export const getCurrentWeather = async (req, res) => {
         },
       }
     );
-    res.json(response.data);
+    const solarResponse = await axios.get(`${process.env.SOLAR_DATA_URL}`);
+    const solarData = solarResponse.data;
+    const arr = [response.data, solarData];
+    console.log(solarData);
+    res.json(arr);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
