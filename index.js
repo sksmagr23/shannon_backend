@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import DB_Connection from './config/dbConnection.js';
-import userRouter from './router/user.route.js';
 import weatherRouter from './router/weather.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -36,7 +35,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/', userRouter);
 app.use('/api/weather', weatherRouter);
 app.use('/api/location', locationRouter);
 app.use('/api/dashboard', dashboardRouter);
