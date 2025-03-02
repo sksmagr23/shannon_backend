@@ -6,7 +6,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import locationRouter from './router/location.route.js';
 import dashboardRouter from './router/dashboard.route.js';
-
+import predictionRouter from './router/prediction.router.js';
 dotenv.config();
 const app = express();
 
@@ -26,6 +26,7 @@ DB_Connection(connection_string);
 app.use('/api/weather', weatherRouter);
 app.use('/api/location', locationRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/prediction', predictionRouter);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,6 +1,8 @@
 import { Dashboard } from "../model/dashboard.model.js";
 import axios from "axios";
 import https from "https";
+import { Prediction } from "../model/save.model.js";
+
 
 export const addDashboard = async (req, res) => {
     try {
@@ -56,7 +58,13 @@ export const getDashboard = async (req, res) => {
 
         const prediction = await getPrediction(dashboard.latitude, dashboard.longitude);
         await Dashboard.deleteOne({ _id: dashboard._id });
-
+        const newPrediction = new Prediction({
+            solar_gen: prediction.solar_gen,
+            wind_gen: prediction.wind_gen,
+            hydro_gen: prediction.hydro_gen,
+            dates: prediction.dates
+        });
+        await newPrediction.save();
         res.status(200).json({
             dashboard,
             prediction
