@@ -29,13 +29,12 @@ const getPrediction = async (latitude, longitude) => {
         const data = {
             "Message": [Number(latitude), Number(longitude), Number(Date.now())]
         };
-        const response = await axios.post('http://172.20.96.175:8000/predict', data, {
+        const response = await axios.post(`${process.env.ML_API_URL}/predict`, data, {
             headers: {
-                'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
             },
-
             httpsAgent: new https.Agent({
-                rejectUnauthorized: false,
+            rejectUnauthorized: false,
             })
         });
         console.log("Hello the response is", response.data);
