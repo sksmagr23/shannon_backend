@@ -5,9 +5,6 @@ import weatherRouter from './router/weather.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import locationRouter from './router/location.route.js';
-import passport from 'passport';
-import session from 'express-session';
-import './config/passportConfig.js';
 import dashboardRouter from './router/dashboard.route.js';
 
 dotenv.config();
@@ -25,15 +22,6 @@ app.use(express.json());
 const connection_string = process.env.MONGO_URL;
 
 DB_Connection(connection_string);
-
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/api/weather', weatherRouter);
 app.use('/api/location', locationRouter);
