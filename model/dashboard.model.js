@@ -1,6 +1,10 @@
 import {mongoose, Schema} from 'mongoose';
 
 const DashboardSchema = new Schema({
+  cityName: {
+    type: String,
+    required: true,
+  },
   latitude: {
     type: Number,
     required: true,

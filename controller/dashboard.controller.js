@@ -2,20 +2,24 @@ import { Dashboard } from "../model/dashboard.model.js";
 import axios from "axios";
 import https from "https";
 import { Prediction } from "../model/save.model.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 
 export const addDashboard = async (req, res) => {
     try {
-        console.log("Hello1");
-        const { latitude, longitude } = req.body;
+
+        const {cityName, latitude, longitude } = req.body;
         
-        if (!latitude || !longitude) {
-            return res.status(400).json({ message: 'Latitude and Longitude are required' });
+        if (!latitude || !longitude || !cityName) {
+            return res.status(400).json({ message: 'Latitude and Longitude and City Name a`re required' });
         }
 
         const newDashboard = new Dashboard({
             latitude: Number(latitude),
-            longitude: Number(longitude)
+            longitude: Number(longitude),
+            cityName: cityName
         });
 
         const instance = await newDashboard.save();
@@ -26,49 +30,15 @@ export const addDashboard = async (req, res) => {
     }
 };
 
-const getPrediction = async (latitude, longitude) => {
-    try {
-        const data = {
-            "Message": [Number(latitude), Number(longitude), Number(Date.now())]
-        };
-        const response = await axios.post(`${process.env.ML_API_URL}/predict`, data, {
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            httpsAgent: new https.Agent({
-            rejectUnauthorized: false,
-            })
-        });
-        console.log("Hello the response is", response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Prediction Error:', error.message);
-        throw error;
-    }
-};
-
 export const getDashboard = async (req, res) => {
     try {
-        console.log("Hello2");
-        const dashboard = await Dashboard.findOne().sort({ createdAt: -1 });
+        const {_id} = req.body;
+        const dashboard = await Dashboard.findOne({_id: _id});
         
         if (!dashboard) {
             return res.status(404).json({ message: 'No dashboard found' });
         }
-
-        const prediction = await getPrediction(dashboard.latitude, dashboard.longitude);
-        await Dashboard.deleteOne({ _id: dashboard._id });
-        const newPrediction = new Prediction({
-            solar_gen: prediction.solar_gen,
-            wind_gen: prediction.wind_gen,
-            hydro_gen: prediction.hydro_gen,
-            dates: prediction.dates
-        });
-        await newPrediction.save();
-        res.status(200).json({
-            dashboard,
-            prediction
-        });
+        return res.status(200).json(dashboard);
     } catch (error) {
         console.error('Get Dashboard Error:', error);
         res.status(404).json({ message: error.message });
